@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -152,6 +153,7 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
   String? winner;
   bool gameOver = false;
   int _counter = 0;
+  late ConfettiController _confettiController;
 
   bool _computerMoving = false; // Add a flag to prevent multiple computer moves
 
@@ -252,6 +254,18 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
       _counter = 0;
     });
   }
+  @override
+  void initState(){
+    super.initState();
+    _confettiController = ConfettiController(duration: const Duration(seconds: 1));
+  }
+  @override
+  void dispose() {
+
+    _confettiController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
