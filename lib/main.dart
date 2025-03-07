@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -58,6 +57,7 @@ class _GameEntrancePageState extends State<GameEntrancePage> {
     super.initState();
     _playBackgroundMusic();
   }
+
   @override
   void dispose() {
     audioPlayer.stop();
@@ -84,7 +84,7 @@ class _GameEntrancePageState extends State<GameEntrancePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Text(
-                'Tic Tac Toe!',
+                'Sweet Tic Tac Toe!',
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 40),
@@ -153,27 +153,16 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
   String? winner;
   bool gameOver = false;
   int _counter = 0;
-  late ConfettiController _confettiController;
-
-  bool _computerMoving = false; // Add a flag to prevent multiple computer moves
 
   void _handleTap(int index) {
-    if (board[index] == '' && !gameOver && !_computerMoving) { // Check computer moving
+    if (board[index] == '' && !gameOver) {
       setState(() {
         board[index] = currentPlayer;
         _counter++;
         _checkWinner();
-        if (!gameOver && widget.numberOfPlayers == 1 && board.contains('')) {
-          _togglePlayer();
-          _computerMoving = true; // Set the flag
-          Future.delayed(const Duration(milliseconds: 500), () {
-            if(!gameOver && board.contains('')){
-              _makeComputerMove();
-              _computerMoving = false; // Reset the flag after the move
-            } else {
-              _computerMoving = false;
-            }
-          });
+        _togglePlayer();
+        if (widget.numberOfPlayers == 1 && !gameOver) {
+          _makeComputerMove();
         }
       });
     }
@@ -182,14 +171,9 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
   void _makeComputerMove() {
     if (board.contains('')) {
       int bestMove = _getBestMove();
-      if (bestMove != -1) {
-        setState(() { // Wrap the board update in a setState
-          board[bestMove] = currentPlayer;
-          _counter++;
-          _checkWinner();
-          if(!gameOver && board.contains('')){
-            _togglePlayer();
-          }
+      if(bestMove != -1){
+        Future.delayed(const Duration(milliseconds: 500), () {
+          _handleTap(bestMove);
         });
       }
     }
@@ -254,18 +238,6 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
       _counter = 0;
     });
   }
-  @override
-  void initState(){
-    super.initState();
-    _confettiController = ConfettiController(duration: const Duration(seconds: 1));
-  }
-  @override
-  void dispose() {
-
-    _confettiController.dispose();
-    super.dispose();
-  }
-
 
   @override
   Widget build(BuildContext context) {
