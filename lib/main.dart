@@ -153,17 +153,25 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
   bool gameOver = false;
   int _counter = 0;
 
+  bool _computerMoving = false; // Add a flag to prevent multiple computer moves
+
   void _handleTap(int index) {
-    if (board[index] == '' && !gameOver) {
+    if (board[index] == '' && !gameOver && !_computerMoving) { // Check computer moving
       setState(() {
         board[index] = currentPlayer;
         _counter++;
         _checkWinner();
-        if (!gameOver) { // Check if the game is still not over after the player's move.
+        if (!gameOver && widget.numberOfPlayers == 1 && board.contains('')) {
           _togglePlayer();
-          if (widget.numberOfPlayers == 1 && !gameOver && board.contains('')) { // Added a check to see if there is still empty spaces on the board.
-            _makeComputerMove();
-          }
+          _computerMoving = true; // Set the flag
+          Future.delayed(const Duration(milliseconds: 500), () {
+            if(!gameOver && board.contains('')){
+              _makeComputerMove();
+              _computerMoving = false; // Reset the flag after the move
+            } else {
+              _computerMoving = false;
+            }
+          });
         }
       });
     }
@@ -172,9 +180,14 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
   void _makeComputerMove() {
     if (board.contains('')) {
       int bestMove = _getBestMove();
-      if(bestMove != -1){
-        Future.delayed(const Duration(milliseconds: 500), () {
-          _handleTap(bestMove);
+      if (bestMove != -1) {
+        setState(() { // Wrap the board update in a setState
+          board[bestMove] = currentPlayer;
+          _counter++;
+          _checkWinner();
+          if(!gameOver && board.contains('')){
+            _togglePlayer();
+          }
         });
       }
     }
