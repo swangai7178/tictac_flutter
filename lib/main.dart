@@ -57,7 +57,6 @@ class _GameEntrancePageState extends State<GameEntrancePage> {
     super.initState();
     _playBackgroundMusic();
   }
-
   @override
   void dispose() {
     audioPlayer.stop();
@@ -84,7 +83,7 @@ class _GameEntrancePageState extends State<GameEntrancePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Text(
-                'Sweet Tic Tac Toe!',
+                'Tic Tac Toe!',
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 40),
@@ -154,15 +153,25 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
   bool gameOver = false;
   int _counter = 0;
 
+  bool _computerMoving = false; // Add a flag to prevent multiple computer moves
+
   void _handleTap(int index) {
-    if (board[index] == '' && !gameOver) {
+    if (board[index] == '' && !gameOver && !_computerMoving) { // Check computer moving
       setState(() {
         board[index] = currentPlayer;
         _counter++;
         _checkWinner();
-        _togglePlayer();
-        if (widget.numberOfPlayers == 1 && !gameOver) {
-          _makeComputerMove();
+        if (!gameOver && widget.numberOfPlayers == 1 && board.contains('')) {
+          _togglePlayer();
+          _computerMoving = true; // Set the flag
+          Future.delayed(const Duration(milliseconds: 500), () {
+            if(!gameOver && board.contains('')){
+              _makeComputerMove();
+              _computerMoving = false; // Reset the flag after the move
+            } else {
+              _computerMoving = false;
+            }
+          });
         }
       });
     }
@@ -171,9 +180,14 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
   void _makeComputerMove() {
     if (board.contains('')) {
       int bestMove = _getBestMove();
-      if(bestMove != -1){
-        Future.delayed(const Duration(milliseconds: 500), () {
-          _handleTap(bestMove);
+      if (bestMove != -1) {
+        setState(() { // Wrap the board update in a setState
+          board[bestMove] = currentPlayer;
+          _counter++;
+          _checkWinner();
+          if(!gameOver && board.contains('')){
+            _togglePlayer();
+          }
         });
       }
     }
