@@ -159,9 +159,11 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
         board[index] = currentPlayer;
         _counter++;
         _checkWinner();
-        _togglePlayer();
-        if (widget.numberOfPlayers == 1 && !gameOver) {
-          _makeComputerMove();
+        if (!gameOver) { // Check if the game is still not over after the player's move.
+          _togglePlayer();
+          if (widget.numberOfPlayers == 1 && !gameOver && board.contains('')) { // Added a check to see if there is still empty spaces on the board.
+            _makeComputerMove();
+          }
         }
       });
     }
