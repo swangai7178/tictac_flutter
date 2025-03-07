@@ -57,7 +57,6 @@ class _GameEntrancePageState extends State<GameEntrancePage> {
     super.initState();
     _playBackgroundMusic();
   }
-
   @override
   void dispose() {
     audioPlayer.stop();
