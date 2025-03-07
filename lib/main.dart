@@ -83,7 +83,7 @@ class _GameEntrancePageState extends State<GameEntrancePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Text(
-                'Sweet Tic Tac Toe!',
+                'Tic Tac Toe!',
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 40),
