@@ -160,6 +160,9 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
       setState(() {
         board[index] = currentPlayer;
         _counter++;
+        if(widget.numberOfPlayers == 2 && !gameOver) {
+           _togglePlayer();
+        }
         _checkWinner();
         if (!gameOver && widget.numberOfPlayers == 1 && board.contains('')) {
           _togglePlayer();
@@ -194,16 +197,59 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
   }
 
   int _getBestMove() {
-    List<int> availableMoves = [];
+     // Check if the computer can win in the next move
     for (int i = 0; i < 9; i++) {
       if (board[i] == '') {
-        availableMoves.add(i);
+        board[i] = '🍭';
+        if (_checkWin('🍭')) {
+          board[i] = ''; // Reset the board
+          return i;
+        }
+        board[i] = ''; // Reset the board
       }
     }
-    if(availableMoves.isEmpty){
+
+    // Check if the player can win in the next move and block them
+    for (int i = 0; i < 9; i++) {
+      if (board[i] == '') {
+        board[i] = '🍬';
+        if (_checkWin('🍬')) {
+          board[i] = ''; // Reset the board
+          return i;
+        }
+        board[i] = ''; // Reset the board
+      }
+    }
+
+    // Try to take the center
+    if (board[4] == '') {
+      return 4;
+    }
+
+    // Try to take a corner
+    List<int> corners = [0, 2, 6, 8];
+    List<int> availableCorners = corners.where((corner) => board[corner] == '').toList();
+    if (availableCorners.isNotEmpty) {
+      return availableCorners[Random().nextInt(availableCorners.length)];
+    }
+
+    // Take any empty space
+    List<int> availableMoves = [];
+      for (int i = 0; i < 9; i++) {
+        if (board[i] == '') {
+          availableMoves.add(i);
+        }
+      }
+
+    if (availableMoves.isNotEmpty) {
+      return availableMoves[Random().nextInt(availableMoves.length)];
+    } else {
       return -1;
     }
-    return availableMoves[Random().nextInt(availableMoves.length)];
+  }
+
+    bool _checkWin(String player) {
+    return (board[0] == player && board[1] == player && board[2] == player) || (board[3] == player && board[4] == player && board[5] == player) || (board[6] == player && board[7] == player && board[8] == player) || (board[0] == player && board[3] == player && board[6] == player) || (board[1] == player && board[4] == player && board[7] == player) || (board[2] == player && board[5] == player && board[8] == player) || (board[0] == player && board[4] == player && board[8] == player) || (board[2] == player && board[4] == player && board[6] == player);
   }
 
   void _togglePlayer() {
