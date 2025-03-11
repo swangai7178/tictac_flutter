@@ -179,7 +179,6 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
       });
     }
   }
-
   void _makeComputerMove() {
     if (board.contains('')) {
       int bestMove = _getBestMove();
