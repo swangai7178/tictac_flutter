@@ -207,7 +207,7 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
         board[i] = ''; // Reset the board
       }
     }
-
+3
     // Check if the player can win in the next move and block them
     for (int i = 0; i < 9; i++) {
       if (board[i] == '') {
@@ -279,7 +279,6 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
         return;
       }
     }
-
     if (!board.contains('')) {
       setState(() {
         winner = 'Draw';
