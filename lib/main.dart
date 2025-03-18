@@ -224,8 +224,6 @@ class _CandyCrushTicTacToeState extends State<CandyCrushTicTacToe> {
     if (board[4] == '') {
       return 4;
     }
-
-    // Try to take a corner
     List<int> corners = [0, 2, 6, 8];
     List<int> availableCorners = corners.where((corner) => board[corner] == '').toList();
     if (availableCorners.isNotEmpty) {
